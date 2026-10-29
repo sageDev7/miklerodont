@@ -1,0 +1,134 @@
+/* Kit base sageDev — main.js (sirve para el index y las páginas internas: todo está protegido con «if»). */
+(function () {
+  "use strict";
+
+  /* ---------- WhatsApp: número único; cada botón .js-wa trae su propio data-msg ---------- */
+  var WA_NUMBER = ""; // su web no publica WhatsApp: los CTA llaman (tel:) y el formulario va por email
+  function waUrl(msg) { return "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(msg); }
+  document.querySelectorAll(".js-wa").forEach(function (a) {
+    a.href = waUrl(a.getAttribute("data-msg") || "Hola, quisiera hacer una consulta.");
+    a.target = "_blank"; a.rel = "noopener";
+  });
+  /* links a páginas que todavía no existen */
+  document.querySelectorAll("[data-soon]").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); }); });
+
+  var body = document.body;
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- header: transparente arriba, sólido al scrollear ---------- */
+  var hdr = document.getElementById("hdr");
+  if (hdr) {
+    var onScroll = function () { hdr.classList.toggle("sc", window.scrollY > 40); };
+    onScroll(); window.addEventListener("scroll", onScroll, { passive: true });
+  }
+
+  /* ---------- menú mobile: la hamburguesa se transforma en cruz (un solo botón) ---------- */
+  var burger = document.getElementById("burger");
+  function setNav(open) {
+    body.classList.toggle("nav-open", open);
+    if (!burger) return;
+    burger.setAttribute("aria-expanded", open ? "true" : "false");
+    burger.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+  }
+  if (burger) {
+    burger.addEventListener("click", function () { setNav(!body.classList.contains("nav-open")); });
+    var ov = document.getElementById("mnavOv"); if (ov) ov.addEventListener("click", function () { setNav(false); });
+    document.querySelectorAll(".mnav a").forEach(function (a) { a.addEventListener("click", function () { setNav(false); }); });
+  }
+
+  /* ---------- reveals (usar .on, no .in, para otros estados) ---------- */
+  var items = document.querySelectorAll(".reveal");
+  if (reduce || !("IntersectionObserver" in window)) {
+    items.forEach(function (el) { el.classList.add("in"); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); } });
+    }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+    items.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------- flotante de WhatsApp: se oculta en contacto y footer ---------- */
+  var fab = document.getElementById("waFloat");
+  if (fab && "IntersectionObserver" in window) {
+    var hidden = new Set();
+    var fio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) hidden.add(en.target); else hidden.delete(en.target); });
+      fab.classList.toggle("hide", hidden.size > 0);
+    });
+    document.querySelectorAll("#contacto, #ftr").forEach(function (el) { fio.observe(el); });
+  }
+
+  /* ---------- formulario: se envía por email (FormSubmit) o por WhatsApp ----------
+     Si el proyecto no lleva el botón de WhatsApp, borrar #formWaBtn del HTML: el resto sigue andando.
+     El email es obligatorio solo para el envío por email. */
+  var form = document.getElementById("contactForm");
+  var modal = document.getElementById("okModal");
+  if (form) {
+    var btn = document.getElementById("formSubmitBtn"), waBtn = document.getElementById("formWaBtn");
+    var email = document.getElementById("fEmail"), iframe = document.getElementById("formsubmit-iframe");
+    var btnTxt = btn ? btn.textContent : "", sending = false;
+    var valid = function (input, porEmail) {
+      var v = input.value.trim();
+      var ok = input === email ? (v === "" ? !porEmail : /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) : v !== "";
+      input.closest(".field").classList.toggle("err", !ok);
+      return ok;
+    };
+    var check = function (porEmail) {
+      var ok = true;
+      form.querySelectorAll("[required]").forEach(function (i) { if (!valid(i, porEmail)) ok = false; });
+      if (email && !valid(email, porEmail)) ok = false;
+      if (!ok) { var f = form.querySelector(".field.err input,.field.err select,.field.err textarea"); if (f) f.focus(); }
+      return ok;
+    };
+    form.addEventListener("submit", function (e) {
+      if (!check(true)) { e.preventDefault(); return; }
+      sending = true; btn.disabled = true; btn.textContent = "Enviando...";
+    });
+    if (waBtn) waBtn.addEventListener("click", function () {
+      if (!check(false)) return;
+      var val = function (id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; };
+      var txt = "Hola, soy " + val("fNombre") + "." + (val("fArea") ? " Quisiera hacer una consulta sobre " + val("fArea") + "." : "") +
+        "\n\n" + val("fMsg") + "\n\nTeléfono: " + val("fTel") + (val("fEmail") ? "\nEmail: " + val("fEmail") : "");
+      window.open(waUrl(txt), "_blank", "noopener");
+    });
+    form.querySelectorAll("input:not([type=hidden]),select,textarea").forEach(function (i) {
+      var re = function () { var f = i.closest(".field"); if (f && f.classList.contains("err")) valid(i, false); };
+      i.addEventListener("input", re); i.addEventListener("change", re);
+    });
+    if (iframe) iframe.addEventListener("load", function () {
+      if (!sending) return;
+      sending = false; form.reset(); btn.disabled = false; btn.textContent = btnTxt;
+      if (modal) modal.classList.add("show");
+    });
+  }
+  if (modal) modal.addEventListener("click", function (e) { if (e.target === modal || e.target.hasAttribute("data-close")) modal.classList.remove("show"); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    setNav(false); if (modal) modal.classList.remove("show");
+  });
+
+  /* ---------- horario del consultorio en vivo (hora de Buenos Aires) ---------- */
+  var est = document.getElementById("estado");
+  if (est && window.Intl) {
+    var H = { 1: [14, 19], 2: [9, 19], 3: [9, 19], 4: [9, 19], 5: [14, 19] };
+    var DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    var p = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/Argentina/Buenos_Aires", weekday: "short", hour: "numeric", minute: "numeric", hourCycle: "h23" })
+      .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+    var d = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday);
+    var h = (parseInt(p.hour, 10) % 24) + parseInt(p.minute, 10) / 60, r = H[d], tit, sub;
+    if (d >= 0) {
+      if (r && h >= r[0] && h < r[1]) { tit = "Abierto ahora"; sub = "Hoy atendemos hasta las " + r[1] + " h"; est.classList.add("on"); }
+      else if (r && h < r[0]) { tit = "Cerrado ahora"; sub = "Hoy abrimos a las " + r[0] + " h"; }
+      else {
+        var k = d, n = 0;
+        do { k = (k + 1) % 7; n++; } while (!H[k]);
+        tit = "Cerrado ahora"; sub = "Abrimos " + (n === 1 ? "mañana" : "el " + DIAS[k]) + " a las " + H[k][0] + " h";
+      }
+      document.getElementById("estadoTit").textContent = tit;
+      document.getElementById("estadoSub").textContent = sub;
+    }
+  }
+
+  var yr = document.getElementById("yr"); if (yr) yr.textContent = new Date().getFullYear();
+})();

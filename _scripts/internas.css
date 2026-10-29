@@ -1,0 +1,118 @@
+
+/* =========================================================
+   INTERNAS (gen_paginas.py)
+   ========================================================= */
+.pg .hdr{background:rgba(255,255,255,.96);box-shadow:0 10px 30px -20px rgba(0,0,0,.4)}
+.nav a[aria-current="page"]:not(.btn)::after{transform:scaleX(1)}
+.mnav a[aria-current="page"]{color:var(--lima)}
+
+/* cabecera de página: foto B/N con velo azul acero */
+.ph{position:relative;padding:calc(var(--hdr) + 5rem) 0 4.4rem;overflow:hidden;background:var(--dark)}
+.ph::before{content:"";position:absolute;inset:0;background:var(--ph) center 50%/cover no-repeat;filter:grayscale(1)}
+.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(20,42,60,.95) 0%,rgba(30,58,82,.86) 50%,rgba(63,114,154,.6) 100%)}
+.ph-in{position:relative;z-index:1}
+.crumb{display:flex;align-items:center;gap:.5rem;font-size:.74rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.crumb a{color:var(--accent-l)}
+.crumb a:hover{text-decoration:underline}
+.ph-h1{margin-top:1rem;font-size:clamp(2.6rem,4.8vw,3.9rem);color:#fff}
+.ph-sub{max-width:36rem;margin-top:.9rem;font-size:1.12rem;font-weight:500;color:rgba(255,255,255,.84)}
+
+/* tratamientos */
+.chips{position:sticky;top:var(--hdr);z-index:30;background:rgba(255,255,255,.97);border-bottom:1px solid var(--line)}
+.chips-in{display:flex;justify-content:center;flex-wrap:wrap;gap:.4rem 2.2rem;padding-top:1rem;padding-bottom:1rem}
+.chips a{font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--dark);padding:.3rem 0;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+.chips a:hover{color:var(--accent);border-color:var(--accent)}
+.grupo{scroll-margin-top:calc(var(--hdr) + 58px)}
+.grupo-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:5rem;align-items:start}
+.grupo-grid>*{min-width:0}
+.ic-box{display:grid;place-items:center;width:56px;height:56px;margin-bottom:1.3rem;border:1px solid var(--accent);border-radius:4px;font-size:1.6rem;color:var(--accent)}
+.grupo-head .lead{margin:1rem 0 1.6rem}
+.filas li{padding:1.3rem 0}
+.filas li+li{border-top:1px solid var(--line)}
+.filas h3{font-size:1.22rem}
+.filas p{margin-top:.25rem;color:var(--muted)}
+.sec-alt .filas p{color:#414D57}
+.sec-dark .filas li+li{border-color:var(--line-d)}
+.sec-dark .filas p{color:rgba(255,255,255,.78)}
+.sec-dark .ic-box{border-color:var(--accent-l);color:var(--accent-l)}
+.cta-in{display:flex;flex-direction:column;align-items:center;text-align:center;max-width:46rem}
+.cta-in .lead{margin:1rem 0 2rem}
+.cta-btns{display:flex;flex-wrap:wrap;justify-content:center;gap:1rem}
+
+/* el consultorio */
+.dr-grid{display:grid;grid-template-columns:.75fr 1.25fr;gap:5.5rem;align-items:center}
+.dr-grid>*{min-width:0}
+.dr-grid .retrato{max-width:340px}
+.dr-grid .lead{margin:1.2rem 0 1rem}
+.dr-grid p:not(.lead):not(.eyebrow){color:var(--muted)}
+.esp{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.esp li{display:flex;flex-direction:column;align-items:center;gap:.8rem;padding:1.8rem 1rem;border:1px solid var(--line-d);border-top:2px solid var(--accent-l);background:rgba(255,255,255,.04);text-align:center;font-family:var(--head);font-size:1.08rem;font-weight:600;color:#fff}
+.esp i{font-size:1.7rem;color:var(--accent-l)}
+.esp li:last-child:nth-child(4n+3){grid-column:span 2}
+.inst-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.inst-grid>*{min-width:0}
+.inst-grid .lead{margin:1.2rem 0 1.6rem}
+.horario{background:#fff;border:1px solid var(--line);border-top:2px solid var(--accent);padding:2.2rem 2.2rem 1.8rem}
+.horario h3{font-size:1.4rem;margin-bottom:.8rem}
+.horario li{display:flex;justify-content:space-between;gap:1rem;padding:.75rem 0;font-weight:500}
+.horario li+li{border-top:1px solid var(--line)}
+.horario li b{font-weight:700;color:var(--dark)}
+.horario .dir{margin-top:1.4rem;color:#414D57;font-weight:500}
+
+/* preguntas frecuentes */
+.faq-wrap{max-width:820px;margin:0 auto}
+.faq-grupo+.faq-grupo{margin-top:3.6rem}
+.faq-grupo>h2{margin-bottom:1rem;font-size:1.6rem;color:var(--accent)}
+.faq summary{font-size:1.15rem;font-weight:600}
+
+@media (max-width:1024px){
+  .grupo-grid,.dr-grid,.inst-grid{grid-template-columns:1fr;gap:3rem}
+  .dr-grid .retrato{justify-self:center}
+  .esp{grid-template-columns:repeat(2,1fr)}
+  .esp li:last-child:nth-child(4n+3){grid-column:auto}
+  .esp li:last-child:nth-child(odd){grid-column:span 2}
+  .chips{position:static}
+}
+@media (max-width:768px){
+  .ph{padding:calc(var(--hdr) + 3rem) 0 3rem;text-align:center}
+  .crumb{justify-content:center}
+  .ph-h1{font-size:clamp(2.1rem,9vw,2.7rem)}
+  .ph-sub{margin-inline:auto;font-size:1rem}
+  .grupo-head,.dr-grid>div,.inst-grid>div:first-child{text-align:center}
+  .ic-box{margin-inline:auto}
+  .filas li{text-align:center}
+  .horario{padding:1.8rem 1.3rem}
+  .faq-grupo>h2{text-align:center}
+  .faq summary{text-align:center}
+  .faq details p{padding:0 .4rem 1.4rem;text-align:center}
+  .cta-btns{flex-direction:column;align-items:center;width:100%}
+  .cta-btns .btn{width:100%;max-width:300px}
+}
+
+/* v3 — internas acordes al hero: cabecera oscura con la foto a color en diagonal */
+.ph{padding:calc(var(--hdr) + 5.5rem) 0 5rem;background:linear-gradient(120deg,#142A3C 0%,#1E3A52 60%,#25475F 100%)}
+.ph::before{left:auto;width:44%;filter:none;clip-path:polygon(22% 0,100% 0,100% 100%,0 100%);background-position:center}
+.ph::after{left:auto;width:44%;clip-path:polygon(22% 0,100% 0,100% 100%,0 100%);background:linear-gradient(100deg,rgba(20,42,60,.5),rgba(30,58,82,.1))}
+.ph-h1{font-size:clamp(3rem,5.6vw,5rem);line-height:1;letter-spacing:-.03em;max-width:55%}
+.crumb a{color:var(--lima)}
+.ph-sub{max-width:30rem}
+.ic-box{border:0;background:var(--dark);color:var(--lima)}
+.sec-dark .ic-box{background:var(--lima);color:#142A3C}
+.esp li{border-top:3px solid var(--lima)}
+.esp i{color:var(--lima)}
+.horario{border-top:3px solid var(--lima)}
+.os li{border-left:3px solid var(--lima)}
+.faq-grupo>h2{color:var(--dark);padding-left:.9rem;border-left:4px solid var(--lima)}
+.faq summary::after{color:var(--lima-d);font-weight:700}
+.chips a:hover{color:var(--dark);border-color:var(--lima)}
+@media (max-width:1024px){
+  .ph-h1{max-width:none}
+  .ph::before,.ph::after{width:38%}
+}
+@media (max-width:768px){
+  .ph::before,.ph::after{display:none}
+  .ph-h1{font-size:clamp(2.4rem,11vw,3.2rem)}
+  .faq-grupo>h2{border-left:0;padding-left:0;border-bottom:3px solid var(--lima);display:inline-block;padding-bottom:.3rem}
+  .faq-grupo{text-align:center}
+  .faq{text-align:left}
+}

@@ -1,0 +1,13 @@
+{
+  "sitio": "Mikler Odontología",
+  "titulo_corto": "Mikler Odontología",
+  "responsable": "Mikler Odontología (Dr. Amit Mikler)",
+  "domicilio": "Av. Santa Fe 3546, piso 1, depto. 12, Ciudad Autónoma de Buenos Aires",
+  "email": "info@mikler.com.ar",
+  "telefono": "(011) 4824-6496",
+  "persona": "nosotros",
+  "formulario": true,
+  "btn": "btn-dark",
+  "theme_color": "#FFFFFF",
+  "css": {"fondo": "#fff", "fondo_hero": "var(--bg-alt)", "texto_hero": "var(--dark)", "acento": "var(--accent)", "muted": "var(--muted)", "titulos": "var(--head)"}
+}
